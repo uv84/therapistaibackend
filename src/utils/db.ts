@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 import { logger } from "./logger";
 
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://urvalchikhale:p3CfUkbeoqIcT6vD@cluster01.vqrhzjd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster01"
-;
+const MONGODB_URI = process.env.MONGODB_URI;
+
+if (!MONGODB_URI) {
+  throw new Error("MONGODB_URI environment variable is required");
+}
 
 export const connectDB = async () => {
   try {
@@ -15,3 +16,6 @@ export const connectDB = async () => {
     process.exit(1);
   }
 };
+
+
+

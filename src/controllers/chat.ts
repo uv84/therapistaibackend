@@ -9,9 +9,12 @@ import { InngestSessionResponse, InngestEvent } from "../types/inngest";
 import { Types } from "mongoose";
 
 // Initialize Gemini API
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY || "AIzaSyBCBz3wQu9Jjd_icCDZf-17CUO_O8IynwI"
-);
+const getGenAI = () => {
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error("GEMINI_API_KEY environment variable is required");
+  }
+  return new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+};
 
 // Create a new chat session
 export const createChatSession = async (req: Request, res: Response) => {
@@ -110,6 +113,7 @@ export const sendMessage = async (req: Request, res: Response) => {
     await inngest.send(event);
 
     // Process the message directly using Gemini
+    const genAI = getGenAI();
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Analyze the message
